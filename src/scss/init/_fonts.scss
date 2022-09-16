@@ -1,0 +1,12 @@
+@use "@fontsource/roboto/scss/mixins" as Roboto;
+
+@use "@fortawesome/fontawesome-free/scss/fontawesome"; /*with (
+    $fa-font-path: "@fortawesome/fontawesome-free/webfonts/"
+);*/
+@use "@fortawesome/fontawesome-free/scss/solid"; /*with (
+    $fa-font-path: "@fortawesome/fontawesome-free/webfonts/"
+);*/
+
+@include Roboto.fontFace($weight: 400, $style: "normal");
+@include Roboto.fontFace($weight: 500, $style: "normal");
+@include Roboto.fontFace($weight: 900, $style: "normal");

@@ -1,0 +1,88 @@
+@use "init/variables" as *;
+@use "init/index" as init;
+@use "components/index" as components;
+
+//MUI
+@import "~muicss/dist/css/mui";
+
+*,
+:before,
+:after {
+    box-sizing: border-box;
+}
+
+html {
+    //background: $blue;
+    font-size: 62.5%;
+}
+
+body {
+    margin: 0px;
+    font-family: "Roboto", sans-serif;
+}
+
+#app {
+    width: 100%;
+    margin: 0;
+    background: transparent;
+    min-height: 100vh;
+}
+
+.content {
+    padding-top: $header-height + 1rem;
+    font-size: 1.4rem;
+}
+
+.container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin: auto;
+    @each $name, $width in $container-widths {
+        @media only screen and (min-width: map-get($grid-breakpoints, #{$name} )) {
+            max-width: $width;
+        }
+    }
+}
+
+.section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    p {
+        font-size: 1.8rem;
+        margin-top: 0;
+        margin-bottom: 3rem;
+        text-align: justify;
+        color: $medium;
+    }
+    &.dark {
+        background-color: black;
+        color: $light;
+        h2 {
+            color: $light;
+        }
+        p {
+            color: $lighter;
+        }
+    }
+}
+
+.parallax {
+    min-height: 125vh;
+
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.table-wrapper {
+    max-width: 100%;
+    width: 100%;
+    overflow: auto;
+    min-width: 0;
+}
+
+.mui-divider {
+    margin-top: 5px;
+    margin-bottom: 15px;
+}

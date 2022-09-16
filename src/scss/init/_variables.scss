@@ -1,0 +1,28 @@
+$grid-breakpoints: (
+    "sm": 576px,
+    "md": 768px,
+    "lg": 992px,
+    "xl": 1200px,
+);
+
+$container-widths: (
+    "md": 720px,
+    "lg": 820px,
+    "xl": 1080px,
+);
+
+$border-radius: 3px;
+
+$header-height: 6rem;
+
+$sidebar-width: 25rem;
+
+$lightblue: #1fc8db;
+$lighterblue: #9fb8ad;
+$mediumblue: #2cb5e8;
+$red: #ff4d94;
+$blue: #286a8c;
+$dark: #303133;
+$medium: #777777;
+$light: #dddddd;
+$lighter: #eeeeee;

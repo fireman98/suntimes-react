@@ -1,0 +1,51 @@
+@use "./variables" as *;
+.image-icon-wrapper {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    border: 1px solid transparent;
+    outline: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+    &:enabled {
+        &:focus {
+            text-shadow: 3px 1px 3px $dark;
+        }
+
+        @media (hover: hover) {
+            &:hover {
+                color: $lightblue;
+            }
+        }
+        &:active {
+            color: $red;
+        }
+    }
+    &:disabled {
+        opacity: 0.4;
+    }
+}
+
+.btn {
+    transition: color 0.3s;
+    &:enabled {
+        &:focus {
+            text-shadow: 3px 1px 3px $dark;
+        }
+
+        @media (hover: hover) {
+            &:hover {
+                color: $lightblue;
+            }
+        }
+
+        &.btn--active {
+            color: $red;
+        }
+
+        &:active {
+            color: $red;
+        }
+    }
+}

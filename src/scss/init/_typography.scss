@@ -1,0 +1,27 @@
+@use "./variables" as *;
+
+h1 {
+    margin-top: 0;
+    //margin-bottom: ;
+}
+
+h2 {
+    margin-top: 0;
+    font-size: 4rem;
+    letter-spacing: 3px;
+    margin-bottom: 2rem;
+    color: $dark;
+    text-align: center;
+    word-wrap: break-word;
+}
+.companyName {
+    font-size: 10rem;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    color: $blue;
+    font-weight: 500;
+}
