@@ -3,7 +3,7 @@ import {
 } from "react-router-dom"
 import TimesView from "@/views/TimesView"
 import AboutView from "../views/AboutView"
-import HomeView from "../views/Homeview"
+import HomeView from "../views/HomeView"
 import App from "@/App"
 import { RouteObject } from "react-router-dom"
 

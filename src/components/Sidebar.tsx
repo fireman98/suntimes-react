@@ -2,7 +2,7 @@ import { FunctionComponent, useMemo, useRef, useState } from "react"
 import "./Sidebar.scoped.scss"
 import { IRouteObject, routes } from "@/router/index"
 import { Link } from "react-router-dom"
-import { SwitchTransition, CSSTransition } from "react-transition-group"
+import { CSSTransition } from "react-transition-group"
 
 //Define additional routes that not belong to the application
 const additional_routes = [
@@ -40,6 +40,7 @@ const Sidebar: FunctionComponent<{
             <div className={'sidebar ' + (active ? 'active' : '')}>
                 <div>
                     <ul>
+                        {/* TODO: activeClass */}
                         {routesToShow.map(link => {
                             return (
                                 <li key={link.path} onClick={() => onSidebaroff()}>

@@ -1,0 +1,102 @@
+@use "@/scss/init/variables" as *;
+
+.sunpercentage {
+    width: 100%;
+}
+
+.suntimes {
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        position: relative;
+
+        &__buttons {
+            button {
+                margin-left: 10px;
+            }
+
+            i {
+                font-size: 3rem;
+            }
+        }
+    }
+
+    &__modals {
+        position: relative;
+        z-index: 1;
+
+        &__modal {
+            position: absolute;
+            top: 0;
+            right: 0;
+            border: 1px solid $lighterblue;
+            border-radius: 4px;
+            padding: 10px;
+            background: var(--background-sun-primary);
+            width: 300px;
+            max-width: 90vw;
+        }
+    }
+
+    &__wrapper {
+        --background-sun-current: #ffffff;
+        --background-sun-next: #ffffff;
+        --foreground-sun: #000000;
+        --background-sun-primary: $light;
+        --opacity-sun-next: 0;
+        position: relative;
+        color: var(--foreground-sun);
+
+        &:deep() {
+            .mui-select__menu {
+                color: #000000 !important;
+            }
+
+            input,
+            select {
+                color: var(--foreground-sun) !important;
+            }
+
+            label {
+                color: var(--foreground-sun) !important;
+            }
+        }
+    }
+}
+
+.sun-graph {
+    margin-bottom: 30px;
+}
+
+a {
+    color: $red;
+}
+
+// TODO: check deep
+::v-deep {
+    .image-icon-wrapper {
+        color: var(--foreground-sun);
+    }
+}
+
+.background {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+
+    &__current {
+        opacity: 1;
+        background: var(--background-sun-current);
+        z-index: -2;
+    }
+
+    &__next {
+        z-index: -1;
+        opacity: var(--opacity-sun-next);
+        background: var(--background-sun-next);
+    }
+}
