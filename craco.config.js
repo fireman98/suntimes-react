@@ -5,4 +5,10 @@ module.exports = {
             '@': path.resolve(__dirname, 'src'),
         },
     },
+
+    plugins: [
+        {
+            plugin: require('craco-plugin-scoped-css'),
+        },
+    ],
 };

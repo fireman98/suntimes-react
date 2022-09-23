@@ -86,3 +86,9 @@ body {
     margin-top: 5px;
     margin-bottom: 15px;
 }
+
+// React specific
+//v-show equivalent
+.v-hidden {
+    display: none !important;
+}

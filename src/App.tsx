@@ -1,25 +1,62 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import logo from './logo.svg'
 import './scss/app.scss'
 
-import {
-  RouterProvider
-} from "react-router-dom"
+import Header from './components/Header'
+import Sidebar from './components/Sidebar'
+import { Outlet, useOutletContext } from 'react-router-dom'
 
-import router from "@/router/index"
+type ContextType = { setRouteClass: React.Dispatch<React.SetStateAction<string>> }
 
+const unfocusButtonIfnotKeyboard = () => {
+  //Blur active element if clicked or touched, but not if interacted by keyboard or accessibility tools
+  const focused = document.activeElement
 
-function App () {
+  if (!focused || !(focused instanceof HTMLElement)) return
+
+  const tagnames = ["button"]
+  if (!tagnames.includes(focused.tagName.toLowerCase())) return
+
+  focused.blur()
+}
+
+const App = () => {
+  const [sidebarActive, setSidebarActive] = useState(false)
+  const [routeClass, setRouteClass] = useState("")
+
+  useEffect(() => {
+    window.addEventListener("mouseup", unfocusButtonIfnotKeyboard)
+    window.addEventListener("touchend", unfocusButtonIfnotKeyboard)
+
+    return () => {
+      window.removeEventListener("mouseup", unfocusButtonIfnotKeyboard)
+      window.removeEventListener("touchend", unfocusButtonIfnotKeyboard)
+    }
+  }, [])
+
   return (
     <div className='app'>
-
-      {/* <PageHeader @sidebaron="sidebarActive = true"></PageHeader> */}
-      <div className="content" /*:class="routeClass"*/>
-        <RouterProvider router={router} /*className="container" @set-route-class="setRouteClass($event)" */ />
+      <Header onSidebaron={() => {
+        setSidebarActive(true)
+      }}></Header>
+      <div className={'content ' + routeClass}>
+        <div className="container">
+          <Outlet context={{ setRouteClass }} />
+        </div>
       </div >
-      {/* <PageSidebar @sidebaroff="sidebarActive = false" :active = "sidebarActive" ></PageSidebar> */}
+      <Sidebar onSidebaroff={() => {
+        setSidebarActive(false)
+      }} active={sidebarActive}></Sidebar>
     </div >
   )
 }
 
+export function useMainOutletContext () {
+  return useOutletContext<ContextType>()
+}
+
 export default App
+function userRef () {
+  throw new Error('Function not implemented.')
+}
+
