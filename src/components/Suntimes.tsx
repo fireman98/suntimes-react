@@ -271,7 +271,7 @@ const Suntimes: FunctionComponent<{
             </div>
             <div>
                 <span>Jelenlegi idő</span>
-                <span className="notranslate">{now.toISOString()}</span>
+                <span className="notranslate">{strftime("%Y.%m.%d. %H:%M:%S", now)}</span>
                 <br />
                 <span>Napfelkelte:</span>
                 <span className="notranslate">{

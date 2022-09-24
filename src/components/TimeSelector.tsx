@@ -139,20 +139,20 @@ const TimeSelector: FunctionComponent<{
                 return
             setActivePeriodIndex(index)
         }
-    }, [activePeriodIndex])
+    }, [activePeriodIndex, periods])
 
 
 
 
     const rangeValue = useComputed({
         get () {
-            return periods[1].getValue()
+            return activePeriod.value.getValue()
         },
 
         set (val) {
-            _time.value = periods[1].getValue(val)
+            _time.value = activePeriod.value.getValue(val)
         }
-    }, [activePeriod, _time.value])
+    }, [activePeriod])
 
     const goNow = useCallback(() => {
         onGoNow()
