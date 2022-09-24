@@ -1,3 +1,5 @@
+@use "../init/variables" as *;
+
 .state {
     &.progress {
         position: fixed;

@@ -4,6 +4,7 @@ import { DateTime } from "luxon"
 import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import SunCalc from "suncalc"
 import strftime from "strftime"
+import TimeSelector from "./TimeSelector"
 
 import "./Suntimes.scoped.scss"
 
@@ -137,7 +138,7 @@ const Suntimes: FunctionComponent<{
             altitude: radians_to_degrees(_position.altitude),
             azimuth: radians_to_degrees(_position.azimuth) + 180,
         }
-    }, [])
+    }, [sunPositionRaw])
 
     useEffect(() => {
         if (!useSkyEffect)
@@ -154,7 +155,7 @@ const Suntimes: FunctionComponent<{
             return { current: "#ffffff", next: "#ffffff", nextOpacity: 0 }
 
         return skyEffect.getLinearGradient()
-    }, [useSkyEffect, skyEffect])
+    }, [useSkyEffect, skyEffect.altitude, skyEffect])
 
     const foregroundColor = useMemo(() => {
         if (!useSkyEffect)
@@ -180,12 +181,13 @@ const Suntimes: FunctionComponent<{
         styles.backgroundSunPrimary =
             !useSkyEffect ? "white" : sunPosition.altitude > 10 ? "white" : "black"
         styles.opacitySunNext = backgroundColor.nextOpacity
-        setStyles(styles)
+        setStyles({ ...styles })
 
     }, [backgroundColor]) // TODO: test deps, immediate
 
     useEffect(() => {
         styles.foregroundSun = foregroundColor
+        setStyles({ ...styles })
     }, [foregroundColor]) // TODO: test deps, immediate
 
     const tick = useCallback(() => {
@@ -206,37 +208,32 @@ const Suntimes: FunctionComponent<{
     }, [])
 
     useEffect(() => {
-        localStorage.setItem("lng", lng.toString())
+        // TODO: save with store to localStorage
     }, [lng])
 
     useEffect(() => {
-        localStorage.setItem("lat", lat.toString())
+        // TODO: save with store to localStorage
     }, [lat])
 
 
     const startTick = useCallback(() => {
         if (tickTask) return
 
-        setTickTask(setInterval(tick, tickInterval))
+        const newTask = setInterval(tick, tickInterval)
+        setTickTask(newTask)
+        return newTask
     }, [tickInterval, tick, tickTask])
 
-    const stopTick = useCallback(() => {
-        clearInterval(tickTask)
+    const stopTick = useCallback((customTickTask?: NodeJS.Timeout) => {
+        clearInterval(customTickTask || tickTask)
         setTickTask(undefined)
     }, [tickTask])
 
     useEffect(() => {
-        startTick()
-
-        //Check localstrorage for longitude and latitude and set;
-        const _lng = Number(localStorage.getItem("lng")),
-            _lat = Number(localStorage.getItem("lat"))
-
-        if (!isNaN(_lng)) setLng(_lng)
-        if (!isNaN(_lat)) setLat(_lat)
+        const newTickTask = startTick()
 
         return () => {
-            stopTick()
+            stopTick(newTickTask)
         }
     }, [])
 
@@ -306,7 +303,7 @@ const Suntimes: FunctionComponent<{
                 <div className="progress sunpercentage">
                     <div className="determinate" style={{ width: percentage + '%' }}></div>
                 </div>
-                <div>TODO: Implement TimeSelector</div>
+                <TimeSelector time={now} updateTime={(val) => setNow(val)} onStopTick={() => stopTick()} onGoNow={() => startTick()} />
                 <div>TODO: Implement SunGraph</div>
                 <div>
                     Sun data by:

@@ -1,0 +1,20 @@
+.time-selector {
+    display: flex;
+    position: relative;
+
+    &__range {
+        flex: 1;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    &__button {
+        margin-left: 5px;
+        margin-right: 5px;
+        font-size: 2rem;
+    }
+
+    &__period-select {
+        margin-right: 5px;
+    }
+}
