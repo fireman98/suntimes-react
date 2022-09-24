@@ -1,5 +1,5 @@
 import useComputed from "@/hooks/useComputed"
-import { FunctionComponent, useCallback, useMemo, useState } from "react"
+import { FunctionComponent, useCallback, useState } from "react"
 import "./TimeSelector.scoped.scss"
 
 class Period {

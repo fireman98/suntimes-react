@@ -53,7 +53,6 @@ const Suntimes: FunctionComponent<{
     const [lat, setLat] = useState(0.0)
 
     const [now, setNow] = useState<Date>(new Date())
-    const [tickTask, setTickTask] = useState<NodeJS.Timer | undefined>(undefined)
     const [tickInterval, setTickInterval] = useState(250)
 
     const [lastaltitude, setLastaltitude] = useState(0)
@@ -66,7 +65,7 @@ const Suntimes: FunctionComponent<{
 
     const minuteOfDay = useMemo(() => now.getHours() * 60 + now.getMinutes(), [now])
 
-    const [skyEffect, setSkyEffect] = useState(new SkyEffect({}))
+    const skyEffect = useRef(new SkyEffect({}))
 
     const [generalSettingsActive, setGeneralSettingsActive] = useState(false)
     const [locationSettingsActive, setLocationSettingsActive] = useState(false)
@@ -128,7 +127,9 @@ const Suntimes: FunctionComponent<{
         )) //one min
 
         setLastaltitude(sunPositionRaw.altitude)
-    }, [sunPositionRaw]) // TODO: test deps
+        // Watch 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sunPositionRaw])
 
     const sunPosition = useMemo(() => {
         const _position = sunPositionRaw
@@ -144,18 +145,19 @@ const Suntimes: FunctionComponent<{
         if (!useSkyEffect)
             return
 
-        skyEffect.altitude = Number(sunPosition.altitude)
-        skyEffect.direction = Boolean(percentage < 50)
+        skyEffect.current.altitude = Number(sunPosition.altitude)
+        skyEffect.current.direction = Boolean(percentage < 50)
 
-        setSkyEffect(skyEffect)
     }, [sunPosition.altitude, percentage, skyEffect, useSkyEffect])
 
     const backgroundColor = useMemo(() => {
         if (!useSkyEffect)
             return { current: "#ffffff", next: "#ffffff", nextOpacity: 0 }
 
-        return skyEffect.getLinearGradient()
-    }, [useSkyEffect, skyEffect.altitude, skyEffect])
+        return skyEffect.current.getLinearGradient()
+        // Watch
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [useSkyEffect, skyEffect.current.altitude, skyEffect])
 
     const foregroundColor = useMemo(() => {
         if (!useSkyEffect)
@@ -182,23 +184,29 @@ const Suntimes: FunctionComponent<{
             !useSkyEffect ? "white" : sunPosition.altitude > 10 ? "white" : "black"
         styles.opacitySunNext = backgroundColor.nextOpacity
         setStyles({ ...styles })
-
-    }, [backgroundColor]) // TODO: test deps, immediate
+        // Watch
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [backgroundColor])
 
     useEffect(() => {
         styles.foregroundSun = foregroundColor
         setStyles({ ...styles })
-    }, [foregroundColor]) // TODO: test deps, immediate
+        //Watch
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [foregroundColor])
 
     const tick = useCallback(() => {
+        console.log("im ticking")
         setNow(new Date())
     }, [])
 
     useEffect(() => {
-        if (year != now.getFullYear()) setYear(now.getFullYear())
-        if (month != now.getMonth()) setMonth(now.getMonth())
-        if (day != now.getDate()) setDay(now.getDate())
-    }, [now]) // TODO: test deps
+        if (year !== now.getFullYear()) setYear(now.getFullYear())
+        if (month !== now.getMonth()) setMonth(now.getMonth())
+        if (day !== now.getDate()) setDay(now.getDate())
+        //Watch
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [now])
 
     const geolocate = useCallback(() => {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -215,30 +223,34 @@ const Suntimes: FunctionComponent<{
         // TODO: save with store to localStorage
     }, [lat])
 
-
-    const startTick = useCallback(() => {
-        if (tickTask) return
-
-        const newTask = setInterval(tick, tickInterval)
-        setTickTask(newTask)
-        return newTask
-    }, [tickInterval, tick, tickTask])
-
-    const stopTick = useCallback((customTickTask?: NodeJS.Timeout) => {
-        clearInterval(customTickTask || tickTask)
-        setTickTask(undefined)
-    }, [tickTask])
-
+    const [isTicking, setIsTicking] = useState(false)
     useEffect(() => {
-        const newTickTask = startTick()
+        const tickTask = isTicking ? setInterval(tick, tickInterval) : undefined
 
         return () => {
-            stopTick(newTickTask)
+            clearInterval(tickTask)
         }
+    }, [isTicking, tickInterval, tick])
+
+    const startTick = useCallback(() => {
+        if (isTicking) return
+
+        setIsTicking(true)
+    }, [isTicking])
+
+    const stopTick = useCallback((customTickTask?: NodeJS.Timeout) => {
+        setIsTicking(false)
     }, [])
 
+    useEffect(() => {
+        startTick()
 
-
+        return () => {
+            stopTick()
+        }
+        //Mounted / unmounted
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
 
     return (

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from './logo.svg'
 import './scss/app.scss'
 
@@ -56,7 +56,3 @@ export function useMainOutletContext () {
 }
 
 export default App
-function userRef () {
-  throw new Error('Function not implemented.')
-}
-
