@@ -1,4 +1,6 @@
+import useComputed from "@/hooks/useComputed"
 import { FunctionComponent, useCallback, useMemo, useState } from "react"
+import "./TimeSelector.scoped.scss"
 
 class Period {
     name
@@ -42,23 +44,6 @@ function dayOfYear (date: Date) {
     return dayOfYear
 }
 
-// TODO: refactor and add types
-function useComputed<Type> (getter: any, setter: any, deps: any) {
-    const val = useMemo(() => {
-        const obj = {
-            get value (): Type {
-                return getter()
-            },
-
-            set value (val: Type) {
-                setter(val)
-            }
-        }
-        return obj
-    }, [deps])
-
-    return val
-}
 
 const TimeSelector: FunctionComponent<{
     time: Date,
@@ -72,26 +57,152 @@ const TimeSelector: FunctionComponent<{
     }, [onStopTick])
 
 
-    const _time = useComputed<Date>(() => {
-        return time
-    }, (val: any) => {
-        stopTick()
-        updateTime(val)
-    }, [])
+    const _time = useComputed<Date>({
+        get () {
+            return time
+        },
+        set (val) {
+            stopTick()
+            updateTime(val)
+        }
+    }, [time])
+
+    const periods: Period[] = [
+        new Period(
+            "year",
+            () => {
+                return days_of_a_year(_time.value.getFullYear())
+            },
+            1,
+            86400000,
+            (val) => {
+                val = Number(val)
+                if (!isNaN(val)) {
+                    const tmpDate = new Date(_time.value)
+                    tmpDate.setUTCMonth(0)
+                    tmpDate.setUTCDate(0)
+                    return new Date(tmpDate.getTime() + activePeriod.value.step * val)
+                } else {
+                    return dayOfYear(_time.value)
+                }
+            },
+            "Év"
+        ),
+
+        new Period(
+            "day",
+            1439,
+            0,
+            3600000,
+            (val) => {
+                val = Number(val)
+                if (!isNaN(val)) {
+                    const hours = Math.floor(val / 60)
+                    const minutes = val % 60
+                    const tmpDate = new Date(_time.value)
+                    tmpDate.setHours(hours)
+                    tmpDate.setMinutes(minutes)
+                    return new Date(tmpDate)
+                } else {
+                    return _time.value.getHours() * 60 + _time.value.getMinutes()
+                }
+            },
+            "Nap"
+        ),
+
+        new Period(
+            "hour",
+            59,
+            0,
+            60000,
+            (val) => {
+                val = Number(val)
+                if (!isNaN(val)) {
+                    const tmpDate = new Date(_time.value)
+                    tmpDate.setMinutes(val)
+                    return new Date(tmpDate)
+                } else {
+                    return _time.value.getMinutes()
+                }
+            },
+            "Óra"
+        ),
+    ]
+    const [activePeriodIndex, setActivePeriodIndex] = useState(1)
+    const activePeriod = useComputed({
+        get () {
+            return periods[activePeriodIndex]
+        },
+        set (val) {
+            const index = periods.findIndex((p) => p === val)
+            if (index === undefined)
+                return
+            setActivePeriodIndex(index)
+        }
+    }, [activePeriodIndex])
+
+
+
+
+    const rangeValue = useComputed({
+        get () {
+            return periods[1].getValue()
+        },
+
+        set (val) {
+            _time.value = periods[1].getValue(val)
+        }
+    }, [activePeriod, _time.value])
 
     const goNow = useCallback(() => {
         onGoNow()
     }, [onGoNow])
 
-    return (
-        <>
-            {_time.value.toISOString()}
-            <button onClick={() => {
-                _time.value = new Date(_time.value.getTime() + 1000 * 60 * 60)
-            }}>Add 1 hour</button>
-            <button onClick={() => goNow()}>goNow</button>
+    const goLeft = useCallback(() => {
+        _time.value = new Date(_time.value.getTime() - activePeriod.value.step)
+    }, [_time, activePeriod.value.step])
 
-        </>
+    const goRight = useCallback(() => {
+        _time.value = new Date(_time.value.getTime() + activePeriod.value.step)
+    }, [_time, activePeriod.value.step])
+
+    return (
+        <div className="time-selector">
+            <div className="mui-select time-selector__period-select">
+                <select onChange={(e) => {
+                    const p = periods.find(p => p.name === e.target.value)
+                    if (!p)
+                        return
+
+                    activePeriod.value = p
+                }}
+                    value={activePeriod.value.name}
+                >
+                    {
+                        periods.map((period) => {
+                            return (
+                                <option key={period.name} value={period.name}>{period.label}</option>
+                            )
+                        })
+                    }
+                </select>
+            </div>
+            <button className="image-icon-wrapper time-selector__button" onClick={() => goLeft()}>
+                <i className="fas fa-chevron-left"></i>
+            </button>
+            <button className="image-icon-wrapper time-selector__button" onClick={() => goRight()}>
+                <i className="fas fa-chevron-right"></i>
+            </button>
+            <input className="time-selector__range" type="range" value={rangeValue.value} onChange={e => rangeValue.value = e.target.value}
+                min={typeof activePeriod.value.rangeMin === 'function' ? activePeriod.value.rangeMin() : activePeriod.value.rangeMin}
+                max={typeof activePeriod.value.rangeMax === 'function'
+                    ? activePeriod.value.rangeMax()
+                    : activePeriod.value.rangeMax} />
+            <button className="image-icon-wrapper time-selector__button" title="Go to current time" onClick={() => goNow()}>
+                <i className="fas fa-history"></i>
+            </button>
+
+        </div >
     )
 }
 
