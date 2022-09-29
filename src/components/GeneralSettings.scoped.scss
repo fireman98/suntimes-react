@@ -1,0 +1,8 @@
+@use "@/scss/init/variables" as *;
+
+.position {
+    &-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+}

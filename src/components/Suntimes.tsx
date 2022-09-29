@@ -9,6 +9,7 @@ import TimeSelector from "./TimeSelector"
 import "./Suntimes.scoped.scss"
 import LocationSettings from "./LocationSettings"
 import SunGraph from "./SunGraph"
+import GeneralSettings from "./GeneralSettings"
 
 function radians_to_degrees (radians: number) {
     const pi = Math.PI
@@ -84,6 +85,10 @@ const Suntimes: FunctionComponent<{
                 setLocationSettingsActive(true)
                 break
         }
+    }, [])
+
+    const onGeneralSettingsClose = useCallback(() => {
+        setGeneralSettingsActive(false)
     }, [])
 
     const [styles, setStyles] = useState({
@@ -276,7 +281,7 @@ const Suntimes: FunctionComponent<{
             </div>
             <div className="suntimes__modals">
                 {generalSettingsActive && <div className="suntimes__modals__modal">
-                    TODO: implement GeneralSettings!!
+                    <GeneralSettings onClose={onGeneralSettingsClose} />
                 </div>}
                 {locationSettingsActive && <div className="suntimes__modals__modal">
                     <LocationSettings lat={lat} updateLat={setLat} lng={lng} updateLng={setLng} onGeolocate={geolocate} />
