@@ -1,0 +1,13 @@
+@use "@/scss/init/variables" as *;
+
+.position {
+    &-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__addressDisplay {
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+}

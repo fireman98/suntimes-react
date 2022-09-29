@@ -1,12 +1,14 @@
 import SkyEffect from "@/classes/SkyEffect"
 import { formatYearMonthDayToISO } from "@/utils/LuxonUtility"
 import { DateTime } from "luxon"
-import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import SunCalc from "suncalc"
 import strftime from "strftime"
 import TimeSelector from "./TimeSelector"
 
 import "./Suntimes.scoped.scss"
+import LocationSettings from "./LocationSettings"
+import SunGraph from "./SunGraph"
 
 function radians_to_degrees (radians: number) {
     const pi = Math.PI
@@ -196,7 +198,6 @@ const Suntimes: FunctionComponent<{
     }, [foregroundColor])
 
     const tick = useCallback(() => {
-        console.log("im ticking")
         setNow(new Date())
     }, [])
 
@@ -278,7 +279,7 @@ const Suntimes: FunctionComponent<{
                     TODO: implement GeneralSettings!!
                 </div>}
                 {locationSettingsActive && <div className="suntimes__modals__modal">
-                    TODO: implement LocationSettings!!
+                    <LocationSettings lat={lat} updateLat={setLat} lng={lng} updateLng={setLng} onGeolocate={geolocate} />
                 </div>}
             </div>
             <div>
@@ -316,7 +317,7 @@ const Suntimes: FunctionComponent<{
                     <div className="determinate" style={{ width: percentage + '%' }}></div>
                 </div>
                 <TimeSelector time={now} updateTime={(val) => setNow(val)} onStopTick={() => stopTick()} onGoNow={() => startTick()} />
-                <div>TODO: Implement SunGraph</div>
+                <SunGraph date={currentDayLuxon} activePoint={minuteOfDay} labelColor={(styleForWrapper as { [key: string]: string })['--foreground-sun']} />
                 <div>
                     Sun data by:
                     <a href="https://www.npmjs.com/package/suncalc">https://www.npmjs.com/package/suncalc</a>
