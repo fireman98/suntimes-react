@@ -1,0 +1,15 @@
+v-deep {
+    .buttons-col {
+        width: 100px;
+    }
+}
+
+.mui-table::deep {
+    > tbody > tr > td {
+        padding: 5px;
+    }
+}
+
+.mui-table > thead > tr > th {
+    padding: 5px;
+}

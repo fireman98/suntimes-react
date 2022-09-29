@@ -1,0 +1,12 @@
+v-deep {
+    .sun-graph > canvas {
+        max-height: 200px;
+        height: 200px;
+    }
+}
+
+.buttons-col {
+    button {
+        margin: 0;
+    }
+}
