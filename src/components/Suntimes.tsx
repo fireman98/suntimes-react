@@ -10,6 +10,9 @@ import "./Suntimes.scoped.scss"
 import LocationSettings from "./LocationSettings"
 import SunGraph from "./SunGraph"
 import GeneralSettings from "./GeneralSettings"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "@/store/configureStore"
+import { setLat, setLng } from "@/store/reducers/settingsReducer"
 
 function radians_to_degrees (radians: number) {
     const pi = Math.PI
@@ -48,12 +51,11 @@ const Suntimes: FunctionComponent<{
     onSetRouteClass: (className: string) => void
 }> = ({ onSetRouteClass }) => {
 
-    //TODO: redux settingsstore
-    //const settingsStore = useSettingsStore()
-    //MOCK
-    const useSkyEffect = true
-    const [lng, setLng] = useState(0.0)
-    const [lat, setLat] = useState(0.0)
+    const settings = useSelector((state: RootState) => state.settings)
+    const dispatch = useDispatch()
+
+    const { useSkyEffect, lng, lat } = settings
+
 
     const [now, setNow] = useState<Date>(new Date())
     const [tickInterval, setTickInterval] = useState(250)
@@ -216,8 +218,8 @@ const Suntimes: FunctionComponent<{
 
     const geolocate = useCallback(() => {
         navigator.geolocation.getCurrentPosition((position) => {
-            setLat(position.coords.latitude)
-            setLng(position.coords.longitude)
+            dispatch(setLat(position.coords.latitude))
+            dispatch(setLng(position.coords.longitude))
         })
     }, [])
 
@@ -284,7 +286,7 @@ const Suntimes: FunctionComponent<{
                     <GeneralSettings onClose={onGeneralSettingsClose} />
                 </div>}
                 {locationSettingsActive && <div className="suntimes__modals__modal">
-                    <LocationSettings lat={lat} updateLat={setLat} lng={lng} updateLng={setLng} onGeolocate={geolocate} />
+                    <LocationSettings lat={lat} updateLat={(val) => dispatch(setLat(val))} lng={lng} updateLng={(val) => dispatch(setLng(val))} onGeolocate={geolocate} />
                 </div>}
             </div>
             <div>

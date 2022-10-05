@@ -6,6 +6,9 @@ import Header from './components/Header'
 import Sidebar from './components/Sidebar'
 import { Outlet, useOutletContext } from 'react-router-dom'
 
+import store from "@/store/configureStore"
+import { Provider } from 'react-redux'
+
 type ContextType = { setRouteClass: React.Dispatch<React.SetStateAction<string>> }
 
 const unfocusButtonIfnotKeyboard = () => {
@@ -35,19 +38,21 @@ const App = () => {
   }, [])
 
   return (
-    <div className='app'>
-      <Header onSidebaron={() => {
-        setSidebarActive(true)
-      }}></Header>
-      <div className={'content ' + routeClass}>
-        <div className="container">
-          <Outlet context={{ setRouteClass }} />
-        </div>
+    <Provider store={store}>
+      <div className='app'>
+        <Header onSidebaron={() => {
+          setSidebarActive(true)
+        }}></Header>
+        <div className={'content ' + routeClass}>
+          <div className="container">
+            <Outlet context={{ setRouteClass }} />
+          </div>
+        </div >
+        <Sidebar onSidebaroff={() => {
+          setSidebarActive(false)
+        }} active={sidebarActive}></Sidebar>
       </div >
-      <Sidebar onSidebaroff={() => {
-        setSidebarActive(false)
-      }} active={sidebarActive}></Sidebar>
-    </div >
+    </Provider>
   )
 }
 
