@@ -1,3 +1,5 @@
+import { AppDispatch } from './../configureStore'
+import { RootState } from '@/store/configureStore'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import localforage from 'localforage'
 
@@ -17,35 +19,38 @@ const initialState: SettingsState = {
     lat: 0.0,
 }
 
-export const saveToLocalStorage = createAsyncThunk<void, void, { state: SettingsState }>(
+export const saveToLocalStorage = createAsyncThunk<undefined, void, { state: RootState }>(
     'settings/saveToLocalStorage',
     async (_, thunkAPI) => {
-        const state = thunkAPI.getState()
+        const { settings: state } = thunkAPI.getState()
         await db.setItem('useSkyEffect', state.useSkyEffect)
         await db.setItem('lng', state.lng)
         await db.setItem('lat', state.lat)
+        return undefined
     }
 )
 
 export const loadFromLocalStorage = createAsyncThunk(
     'settings/loadFromLocalStorage',
     async (_, thunkAPI) => {
-        return {
+        const res = {
             useSkyEffect: await db.getItem('useSkyEffect') ?? true,
             lng: await db.getItem('lng') ?? 0,
             lat: await db.getItem('lat') ?? 0
-        } as SettingsState
+        }
+
+        return res as SettingsState
     }
 )
+
+export const reset = createAsyncThunk('settings/reset', async (_, thunkAPI) => {
+    return new Error("Not implemented")
+})
 
 const settingsSlice = createSlice({
     name: 'settings',
     initialState,
     reducers: {
-        reset (state) { // TODO: saveToLocalStorage
-            state = initialState
-        },
-
         setUseSkyEffect (state, action: PayloadAction<boolean>) {
             state.useSkyEffect = action.payload
         },
@@ -68,5 +73,5 @@ const settingsSlice = createSlice({
     }
 })
 
-export const { reset, setLat, setLng, setUseSkyEffect } = settingsSlice.actions
+export const { setLat, setLng, setUseSkyEffect } = settingsSlice.actions
 export default settingsSlice.reducer

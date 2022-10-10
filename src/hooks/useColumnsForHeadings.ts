@@ -3,12 +3,14 @@ import { useMemo } from 'react'
 import { DateTime } from 'luxon'
 import SuntimesUtility from '@/classes/SuntimesUtility'
 import { formatTime } from '@/utils/LuxonUtility'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store/configureStore'
 
 
 export default function useColumnsForHeadings (headings: string[], date: DateTime) {
-    // TODO: add store
-    // const settingsStore
-    const { lng, lat } = { lng: 0, lat: 0 }
+
+    const settings = useSelector((state: RootState) => state.settings)
+    const { lng, lat } = settings
 
     const ISODate = useMemo(() => {
         return date.toISODate()

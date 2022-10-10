@@ -5,6 +5,8 @@ import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } 
 import { ActiveElement, Chart, ChartConfiguration } from 'chart.js'
 import { LinearScale, LineController, CategoryScale, PointElement, LineElement, Filler, Tooltip, Decimation } from "chart.js"
 import { debounce, formatTime } from "@/helpers/General"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store/configureStore"
 
 Chart.register(LinearScale, LineController, CategoryScale, PointElement, LineElement, Filler, Tooltip, Decimation)
 
@@ -90,9 +92,8 @@ const SunGraph: FunctionComponent<{
     animate?: boolean
 }> = ({ date, activePoint, labelColor = "#ffffff", animate = true }) => {
 
-    // TODO: store!!
-    const [lng, setLng] = useState(0.0)
-    const [lat, setLat] = useState(0.0)
+    const settings = useSelector((state: RootState) => state.settings)
+    const { lng, lat } = settings
 
     const dayData = useMemo(() => {
         return getSunPathForDay(date, lat, lng)

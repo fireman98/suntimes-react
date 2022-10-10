@@ -1,20 +1,24 @@
-import { FunctionComponent, useCallback, useEffect, useState } from "react"
+import { AppDispatch, RootState } from "@/store/configureStore"
+import { loadFromLocalStorage, reset, setUseSkyEffect } from "@/store/reducers/settingsReducer"
+import { FunctionComponent, useCallback } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import "./GeneralSettings.scoped.scss"
 
 const GeneralSettings: FunctionComponent<{
     onClose: () => void
 }> = ({ onClose }) => {
 
-    // TODO: settingsStore
-    const [useSkyEffect, setUseSkyEffect] = useState(true)
+    const dispatch = useDispatch<AppDispatch>()
+    const settings = useSelector((state: RootState) => state.settings)
+    const { useSkyEffect } = settings
 
     const load = useCallback(async () => {
-        console.warn("Not implemented load")
+        await dispatch(loadFromLocalStorage())
         onClose()
     }, [onClose])
 
     const resetDefaults = useCallback(async () => {
-        console.warn("Not implemented")
+        dispatch(reset())
         onClose()
     }, [onClose])
 
@@ -29,7 +33,7 @@ const GeneralSettings: FunctionComponent<{
         <div className="position-wrapper">
             <div className="mui-checkbox">
                 <label>
-                    <input type="checkbox" checked={useSkyEffect} onChange={(e) => setUseSkyEffect(e.target.checked)} />
+                    <input type="checkbox" checked={useSkyEffect} onChange={(e) => dispatch(setUseSkyEffect(e.target.checked))} />
                     SkyEffect background
                 </label>
             </div>

@@ -11,8 +11,8 @@ import LocationSettings from "./LocationSettings"
 import SunGraph from "./SunGraph"
 import GeneralSettings from "./GeneralSettings"
 import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@/store/configureStore"
-import { setLat, setLng } from "@/store/reducers/settingsReducer"
+import { AppDispatch, RootState } from "@/store/configureStore"
+import { loadFromLocalStorage, saveToLocalStorage, setLat, setLng } from "@/store/reducers/settingsReducer"
 
 function radians_to_degrees (radians: number) {
     const pi = Math.PI
@@ -52,7 +52,7 @@ const Suntimes: FunctionComponent<{
 }> = ({ onSetRouteClass }) => {
 
     const settings = useSelector((state: RootState) => state.settings)
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<AppDispatch>()
 
     const { useSkyEffect, lng, lat } = settings
 
@@ -224,11 +224,11 @@ const Suntimes: FunctionComponent<{
     }, [])
 
     useEffect(() => {
-        // TODO: save with store to localStorage
+        dispatch(saveToLocalStorage())
     }, [lng])
 
     useEffect(() => {
-        // TODO: save with store to localStorage
+        dispatch(saveToLocalStorage())
     }, [lat])
 
     const [isTicking, setIsTicking] = useState(false)
@@ -252,6 +252,7 @@ const Suntimes: FunctionComponent<{
 
     useEffect(() => {
         startTick()
+        dispatch(loadFromLocalStorage())
 
         return () => {
             stopTick()
