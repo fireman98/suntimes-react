@@ -1,6 +1,6 @@
 import { AppDispatch, RootState } from "@/store/configureStore"
-import { loadFromLocalStorage, reset, setUseSkyEffect } from "@/store/reducers/settingsReducer"
-import { FunctionComponent, useCallback } from "react"
+import { loadFromLocalStorage, reset, saveToLocalStorage, setUseSkyEffect } from "@/store/reducers/settingsReducer"
+import { FunctionComponent, useCallback, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import "./GeneralSettings.scoped.scss"
 
@@ -12,22 +12,29 @@ const GeneralSettings: FunctionComponent<{
     const settings = useSelector((state: RootState) => state.settings)
     const { useSkyEffect } = settings
 
-    const load = useCallback(async () => {
+    const load = useCallback(async (close: boolean = true) => {
         await dispatch(loadFromLocalStorage())
-        onClose()
-    }, [onClose])
+        if (close)
+            onClose()
+    }, [onClose, dispatch])
 
     const resetDefaults = useCallback(async () => {
+        // React exclusive: Async thunk cant modify state, so this logic must be placed outside store
         dispatch(reset())
+        dispatch(saveToLocalStorage())
         onClose()
-    }, [onClose])
+    }, [onClose, dispatch])
 
     const save = useCallback(async () => {
-        console.warn("Not implemented")
+        await dispatch(saveToLocalStorage())
         onClose()
-    }, [onClose])
+    }, [onClose, dispatch])
 
-    // TODO load on close
+    useEffect(() => {
+        return () => {
+            load(false)
+        }
+    }, [load])
 
     return (
         <div className="position-wrapper">
@@ -40,7 +47,7 @@ const GeneralSettings: FunctionComponent<{
             <button type="button" className="mui-btn mui-btn--secondary" onClick={resetDefaults}>
                 Reset defaults
             </button>
-            <button type="button" className="mui-btn mui-btn--secondary" onClick={load}>
+            <button type="button" className="mui-btn mui-btn--secondary" onClick={() => load(false)}>
                 Cancel
             </button>
             <button type="button" className="mui-btn mui-btn--primary" onClick={save}>

@@ -32,7 +32,7 @@ export const saveToLocalStorage = createAsyncThunk<undefined, void, { state: Roo
 
 export const loadFromLocalStorage = createAsyncThunk(
     'settings/loadFromLocalStorage',
-    async (_, thunkAPI) => {
+    async (_) => {
         const res = {
             useSkyEffect: await db.getItem('useSkyEffect') ?? true,
             lng: await db.getItem('lng') ?? 0,
@@ -43,9 +43,6 @@ export const loadFromLocalStorage = createAsyncThunk(
     }
 )
 
-export const reset = createAsyncThunk('settings/reset', async (_, thunkAPI) => {
-    return new Error("Not implemented")
-})
 
 const settingsSlice = createSlice({
     name: 'settings',
@@ -62,6 +59,10 @@ const settingsSlice = createSlice({
         setLat (state, action: PayloadAction<number>) {
             state.lat = action.payload
         },
+
+        reset () {
+            return initialState
+        }
     },
     extraReducers: (builder) => {
         // Add reducers for additional action types here, and handle loading state as needed
@@ -73,5 +74,5 @@ const settingsSlice = createSlice({
     }
 })
 
-export const { setLat, setLng, setUseSkyEffect } = settingsSlice.actions
+export const { setLat, setLng, setUseSkyEffect, reset } = settingsSlice.actions
 export default settingsSlice.reducer

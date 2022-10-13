@@ -1,7 +1,6 @@
 import SunCalc from "suncalc"
 import { GetTimesResult } from "suncalc"
 import { DateTime } from "luxon"
-import { DAY } from "@/helpers/Timeconsts"
 import Period from "@/interfaces/Period"
 import { radians_to_degrees } from "@/helpers/General"
 

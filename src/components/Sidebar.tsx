@@ -12,7 +12,6 @@ const additional_routes = [
     },
 ]
 
-// TODO: vue-ban alkalmazni a módosításokat
 const getTitle = (route: IRouteObject): string => {
     if (!(typeof route === "object" && route !== null)) return "Invalid input"
 
