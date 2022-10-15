@@ -1,17 +1,10 @@
 import {
     createBrowserRouter
 } from "react-router-dom"
-import TimesView from "@/views/TimesView"
-import AboutView from "../views/AboutView"
-import HomeView from "../views/HomeView"
 import App from "@/App"
 import { RouteObject } from "react-router-dom"
-
-// React.lazy(
-//     () => import("@/App")
-// )
-
-// TODO dynamic load
+import { lazy } from "react"
+import Error from "@/components/Error"
 
 export interface IRouteObject extends RouteObject {
     name?: string,
@@ -22,28 +15,39 @@ export interface IRouteObject extends RouteObject {
     children?: IRouteObject[]
 }
 
+const HomeView = lazy(() => import('../views/HomeView'))
+const TimesView = lazy(() => import('@/views/TimesView'))
+const AboutView = lazy(() => import('@/views/AboutView'))
+
+const createRouteRecord = (record: IRouteObject): IRouteObject => {
+    return {
+        errorElement: <Error />,
+        ...record
+    }
+}
+
 export const routes: IRouteObject[] = [
     {
         path: "/",
         element: <App />,
         children: [
-            {
+            createRouteRecord({
                 path: "",
                 name: 'home',
                 element: <HomeView />,
-            },
+            }),
 
-            {
+            createRouteRecord({
                 path: "/times/sun",
                 name: 'timesData',
-                element: <TimesView />
-            },
+                element: <TimesView />,
+            }),
 
-            {
+            createRouteRecord({
                 path: "/about",
                 name: 'about',
-                element: <AboutView />
-            }
+                element: <AboutView />,
+            })
         ]
     },
 

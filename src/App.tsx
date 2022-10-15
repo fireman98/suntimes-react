@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import logo from './logo.svg'
 import './scss/app.scss'
 
@@ -8,6 +8,7 @@ import { Outlet, useOutletContext } from 'react-router-dom'
 
 import store from "@/store/configureStore"
 import { Provider } from 'react-redux'
+import Loading from './components/Loading'
 
 type ContextType = { setRouteClass: React.Dispatch<React.SetStateAction<string>> }
 
@@ -45,7 +46,9 @@ const App = () => {
         }}></Header>
         <div className={'content ' + routeClass}>
           <div className="container">
-            <Outlet context={{ setRouteClass }} />
+            <Suspense fallback={<Loading />}>
+              <Outlet context={{ setRouteClass }} />
+            </Suspense>
           </div>
         </div >
         <Sidebar onSidebaroff={() => {
