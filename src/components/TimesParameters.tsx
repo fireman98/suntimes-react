@@ -36,11 +36,11 @@ const TimesParameters: FunctionComponent<{
     return (
         <div className="times-parameters">
             <div className="mui-textfield date-input">
-                <input type="date" value={fromAsISODate.value} onChange={e => fromAsISODate.value = e.target.value} />
-                <button className="image-icon-wrapper time-selector__button" onClick={goLeft}>
+                <input type="date" value={fromAsISODate.value} onChange={e => fromAsISODate.value = e.target.value} aria-label="date" />
+                <button className="image-icon-wrapper time-selector__button" onClick={goLeft} title="previous">
                     <i className="fas fa-chevron-left"></i>
                 </button>
-                <button className="image-icon-wrapper time-selector__button" onClick={goRight}>
+                <button className="image-icon-wrapper time-selector__button" onClick={goRight} title="next">
                     <i className="fas fa-chevron-right"></i>
                 </button>
             </div>

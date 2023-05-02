@@ -27,7 +27,7 @@ const TimesRow: FunctionComponent<{
                     {column}
                 </td>)}
                 <td className="buttons-col">
-                    <button className="mui-btn mui-btn--small mui-btn--primary" onClick={toggleIsOpened}>
+                    <button className="mui-btn mui-btn--small mui-btn--primary" onClick={toggleIsOpened} title="Expand / collapse">
                         <i className="fas fa-caret-down"></i>
                     </button>
                 </td>
