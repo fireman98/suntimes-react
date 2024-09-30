@@ -66,5 +66,10 @@
     "@types/strftime": "^0.9.4",
     "@types/suncalc": "^1.8.1",
     "sass": "^1.54.9"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^@/(.+)": "<rootDir>/src/$1"
+    }
   }
 }
